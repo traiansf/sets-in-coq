@@ -1,0 +1,9 @@
+(coq.theory
+ (name sets)
+ (package coq-sets)
+ (synopsis "Basic set-theory definitions in Coq")
+ (flags :standard
+   -w -future-coercion-class-field
+   -w -deprecated-tacopt-without-locality))
+
+(include_subdirs qualified)

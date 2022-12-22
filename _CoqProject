@@ -1,0 +1,7 @@
+-Q theories/sets sets
+
+-arg -w -arg -future-coercion-class-field
+
+theories/sets/Functions.v
+theories/sets/Ensemble.v
+theories/sets/List.v
