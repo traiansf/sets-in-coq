@@ -17,6 +17,7 @@ depends: [
   "dune" {>= "2.5"}
   "coq" {>= "8.15"}
   "coq-stdpp" {>= "1.8.0"}
+  "coq-itauto"
 ]
 
 tags: [
