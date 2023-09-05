@@ -721,3 +721,53 @@ Proof.
 Qed.
 
 End SecKleeneFixPoint.
+
+Section SecMonadicEnsembles.
+
+#[export] Instance ensemble_ret : MRet Ensemble := fun A : Type => singleton.
+#[export] Instance ensemble_bind : MBind Ensemble :=
+  fun (A B: Type) (k : A -> Ensemble B) (ma : Ensemble A) =>
+    filtered_union ma k.
+
+Definition kleisli_composition `{MBind M} `(kbc : b -> M c) `(kab : a -> M b) : a -> M c :=
+  fun a => mbind kbc (kab a).
+
+Class Monad (M : Type -> Type) `{MRet M} `{MBind M} `{forall t, Equiv (M t)} : Prop :=
+{
+  mret_id_r : forall `(kbc : b -> M c) (xb : b), kleisli_composition kbc mret xb ≡ kbc xb; 
+  mret_id_l : forall `(kab : a -> M b) (xa : a), kleisli_composition mret kab xa ≡ kab xa;
+  mbind_assoc : forall `(kab : a -> M b) `(kbc : b -> M c) `(kcd : c -> M d) (xa : a),
+    kleisli_composition kcd (kleisli_composition kbc kab) xa
+      ≡
+    kleisli_composition  (kleisli_composition kcd kbc) kab xa
+}.
+
+#[export] Instance ensemble_monad : Monad Ensemble.
+Proof.
+  split; unfold kleisli_composition, mbind, mret, ensemble_bind, ensemble_ret,
+    singleton, pow_set_singleton, filtered_union; intros.
+  - intro xc.
+    by split; [intros (? & -> & ?) | intros; eexists].
+  - intro xc.
+    by split; [intros (? & ? & ->) | intros; eexists].
+  - intro xd; split.
+    + intros (xc & (xb & Hxb & Hxc) & Hxd).
+      eexists; split; [done |].
+      by eexists; split.
+    + intros (xb & Hxb & xc & Hxc & Hxd).
+      eexists; split; [| done].
+      by eexists; split.
+Qed.
+
+#[export] Instance monad_join `{Monad M} : MJoin M := fun a mma => mma ≫= id.
+
+#[export] Instance monad_map `{Monad M} : FMap M := fun a b f ma => ma ≫= (mret ∘ f).
+
+#[export] Instance ensemble_guard : MGuard Ensemble :=
+  fun (P : Prop) (Hp : Decision P) (A : Type) (Hguard : P → Ensemble A) =>
+  match Hp with
+  | left p => Hguard p
+  | right _ => ∅
+  end.
+
+End SecMonadicEnsembles.
