@@ -184,7 +184,7 @@ Proof.
   split; [| intros ->].
   - intros Hcompl a; split; [| done]; intro Ha.
     destruct (Hcompl a) as [_ Hcompl'].
-    by feed specialize Hcompl'.
+    by set_solver.
   - by rewrite elem_of_equiv_top; intro; apply elem_of_complement, not_elem_of_empty.
 Qed.
 
@@ -734,7 +734,7 @@ Definition kleisli_composition `{MBind M} `(kbc : b -> M c) `(kab : a -> M b) : 
 
 Class Monad (M : Type -> Type) `{MRet M} `{MBind M} `{forall t, Equiv (M t)} : Prop :=
 {
-  mret_id_r : forall `(kbc : b -> M c) (xb : b), kleisli_composition kbc mret xb ≡ kbc xb; 
+  mret_id_r : forall `(kbc : b -> M c) (xb : b), kleisli_composition kbc mret xb ≡ kbc xb;
   mret_id_l : forall `(kab : a -> M b) (xa : a), kleisli_composition mret kab xa ≡ kab xa;
   mbind_assoc : forall `(kab : a -> M b) `(kbc : b -> M c) `(kcd : c -> M d) (xa : a),
     kleisli_composition kcd (kleisli_composition kbc kab) xa
