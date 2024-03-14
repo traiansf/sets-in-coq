@@ -426,21 +426,21 @@ Definition lfp : Ensemble idomain := filtered_intersection pre_fixpoint id.
 Lemma elem_of_lfp x : x ∈ lfp <-> forall A, pre_fixpoint A -> x ∈ A.
 Proof. by apply elem_of_filtered_intersection. Qed.
 
-Lemma knaster_tarsky_least_pre_fixpoint A :
+Lemma knaster_tarski_least_pre_fixpoint A :
   pre_fixpoint A -> lfp ⊆ A.
 Proof.
   intros HA a; rewrite elem_of_lfp.
   by intro Hall; apply Hall in HA.
 Qed.
 
-Lemma knaster_tarsky_lfp_least A :
+Lemma knaster_tarski_lfp_least A :
   fixpoint A -> lfp ⊆ A.
 Proof.
   intro HA; apply set_equiv_subseteq in HA as [HA _].
-  by apply knaster_tarsky_least_pre_fixpoint.
+  by apply knaster_tarski_least_pre_fixpoint.
 Qed.
 
-Lemma knaster_tarsky_lfp_fix : fixpoint lfp.
+Lemma knaster_tarski_lfp_fix : fixpoint lfp.
 Proof.
   apply set_equiv_subseteq.
   cut (pre_fixpoint lfp); [intros Hincl; split; [done |] |].
@@ -450,15 +450,15 @@ Proof.
     intros Ha B HB.
     apply HB.
     assert (Hincl : lfp ⊆ B)
-      by (apply knaster_tarsky_least_pre_fixpoint; done).
+      by (apply knaster_tarski_least_pre_fixpoint; done).
     by apply Proper0 in Hincl; apply Hincl.
 Qed.
 
-Lemma knaster_tarsky_lfp_fix_sub A : A ⊆ lfp -> F A ⊆ lfp.
+Lemma knaster_tarski_lfp_fix_sub A : A ⊆ lfp -> F A ⊆ lfp.
 Proof.
   intro Hincl.
   transitivity (F lfp); [by apply Proper0 |].
-  by apply set_equiv_subseteq; symmetry; apply knaster_tarsky_lfp_fix.
+  by apply set_equiv_subseteq; symmetry; apply knaster_tarski_lfp_fix.
 Qed.
 
 Definition gfp : Ensemble idomain := filtered_union post_fixpoint id.
@@ -466,20 +466,20 @@ Definition gfp : Ensemble idomain := filtered_union post_fixpoint id.
 Lemma elem_of_gfp x : x ∈ gfp <-> exists A, post_fixpoint A /\ x ∈ A.
 Proof. by apply elem_of_filtered_union. Qed.
 
-Lemma knaster_tarsky_greatest_post_fixpoint A :
+Lemma knaster_tarski_greatest_post_fixpoint A :
   post_fixpoint A -> A ⊆ gfp.
 Proof.
   by intros HA a Ha; rewrite elem_of_gfp; eexists.
 Qed.
 
-Lemma knaster_tarsky_gfp_greatest A :
+Lemma knaster_tarski_gfp_greatest A :
   fixpoint A -> A ⊆ gfp.
 Proof.
   intro HA; apply set_equiv_subseteq in HA as [_ HA].
-  by apply knaster_tarsky_greatest_post_fixpoint.
+  by apply knaster_tarski_greatest_post_fixpoint.
 Qed.
 
-Lemma knaster_tarsky_gfp_fix : fixpoint gfp.
+Lemma knaster_tarski_gfp_fix : fixpoint gfp.
 Proof.
   apply set_equiv_subseteq.
   cut (post_fixpoint gfp); [intros Hincl; split; [| done] |].
@@ -488,15 +488,15 @@ Proof.
   - intro a; rewrite elem_of_gfp.
     intros (A & HA & Ha).
     assert (Hincl : A ⊆ gfp)
-      by (apply knaster_tarsky_greatest_post_fixpoint; done).
+      by (apply knaster_tarski_greatest_post_fixpoint; done).
     by apply Proper0 in Hincl; apply Hincl, HA.
 Qed.
 
-Lemma knaster_tarsky_gfp_fix_sub A : gfp ⊆ A -> gfp ⊆ F A.
+Lemma knaster_tarski_gfp_fix_sub A : gfp ⊆ A -> gfp ⊆ F A.
 Proof.
   intro Hincl.
   transitivity (F gfp); [| by apply Proper0].
-  by apply set_equiv_subseteq; apply knaster_tarsky_gfp_fix.
+  by apply set_equiv_subseteq; apply knaster_tarski_gfp_fix.
 Qed.
 
 End SecKnasterTarski.
@@ -627,7 +627,7 @@ Lemma kleene_lfp_least A :
 Proof.
   intro HA; etransitivity.
   - by apply klfp_subseteq_lfp.
-  - by apply knaster_tarsky_lfp_least.
+  - by apply knaster_tarski_lfp_least.
 Qed.
 
 Lemma klfp_fixpoint_elim :
@@ -643,11 +643,11 @@ Proof.
   by apply omega_continuous, kleene_ascending_chain.
 Qed.
 
-Lemma kleene_knaster_tarsky_lfp_equiv :
+Lemma kleene_knaster_tarski_lfp_equiv :
   fixpoint F klfp -> lfp F ≡ klfp.
 Proof.
   intro Hfix; apply set_equiv_subseteq; split.
-  - by apply knaster_tarsky_lfp_least, Hfix.
+  - by apply knaster_tarski_lfp_least, Hfix.
   - by apply klfp_subseteq_lfp.
 Qed.
 
@@ -712,12 +712,12 @@ Proof.
   by apply kleene_greatest_post_fixpoint.
 Qed.
 
-Lemma kleene_knaster_tarsky_gfp_equiv :
+Lemma kleene_knaster_tarski_gfp_equiv :
   fixpoint F kgfp -> gfp F ≡ kgfp.
 Proof.
   intro Hfix; apply set_equiv_subseteq; split.
-  - by apply kleene_gfp_greatest, knaster_tarsky_gfp_fix.
-  - by apply knaster_tarsky_gfp_greatest, Hfix.
+  - by apply kleene_gfp_greatest, knaster_tarski_gfp_fix.
+  - by apply knaster_tarski_gfp_greatest, Hfix.
 Qed.
 
 End SecKleeneFixPoint.
